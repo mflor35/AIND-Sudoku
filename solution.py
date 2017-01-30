@@ -74,7 +74,32 @@ def display(values):
     return
 
 def eliminate(values):
-    pass
+    """
+    Eliminate values from peers of each box with a single value.
+    
+    Go through all the boxes, and whenever there is a box with a single value,
+    eliminate this value from the set of values of all its peers.
+
+    Args:
+        values: Sudoku in dictionary form.
+    Returns:
+        Resulting Sudoku in dictionary form after eliminating values.
+    """
+    boxes = cross(rows, cols)
+    peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
+
+    present_values = []
+    for box in values.keys():
+        if len(values[box]) == 1:
+            present_values.append(box)
+
+    for box in present_values:
+        number = values[box]
+        for peer in peers[box]:
+            values[peer] = values[peer].replace(number,"")
+
+    return values
+
 
 def only_choice(values):
     pass
