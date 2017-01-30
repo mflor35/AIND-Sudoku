@@ -1,4 +1,14 @@
 assignments = []
+rows = 'ABCDEFGHI'
+cols = '123456789'
+#boxes = cross(rows, cols)
+#row_units = [cross(row, cols) for row in rows]
+#column_units = [cross(rows, col) for col in cols]
+#square_units = [cross(rs, cs) for rs in ('ABC', 'DEF', 'GHI') for cs in ('123', '456', '789')]
+#unitlis = row_units + column_units + square_units
+#units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
+#peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
+
 
 def assign_value(values, box, value):
     """
@@ -24,7 +34,7 @@ def naked_twins(values):
 
 def cross(A, B):
     "Cross product of elements in A and elements in B."
-    pass
+    return [ s+t for s in A for t in B ]
 
 def grid_values(grid):
     """
@@ -36,7 +46,17 @@ def grid_values(grid):
             Keys: The boxes, e.g., 'A1'
             Values: The value in each box, e.g., '8'. If the box has no value, then the value will be '123456789'.
     """
-    pass
+    sudoku_dict = {}
+    boxes = cross(rows, cols)
+    assert len(grid) == 81
+    
+    for i in range(len(boxes)):
+        if grid[i] == '.':
+            print(grid[i])
+            sudoku_dict[boxes[i]] = '123456789'
+        else:
+            sudoku_dict[boxes[i]] = grid[i]
+    return sudoku_dict
 
 def display(values):
     """
@@ -44,7 +64,14 @@ def display(values):
     Args:
         values(dict): The sudoku in dictionary form
     """
-    pass
+    boxes = cross(rows, cols)
+    width = 1 + max(len(values[s]) for s in boxes)
+    line  = '+'.join(['-' * (width * 3)] * 3)
+    for r in rows:
+        print(''.join(values[r + c].center(width) + ('|' if c in '36' else '') for c in cols))
+        if r in 'cf':
+            print(line)
+    return
 
 def eliminate(values):
     pass
