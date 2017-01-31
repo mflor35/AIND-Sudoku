@@ -11,7 +11,9 @@ boxes = cross(rows, cols)
 row_units = [cross(row, cols) for row in rows]
 column_units = [cross(rows, col) for col in cols]
 square_units = [cross(rs, cs) for rs in ('ABC', 'DEF', 'GHI') for cs in ('123', '456', '789')]
-unitlist = row_units + column_units + square_units
+diagonal_down = [['A1','B2','C3','D4','E5','F6','G7','H8','I9']]
+diagonal_up = [['A9','B8','C7','D6','E5','F4','G3','H2','I1']]
+unitlist = row_units + column_units + square_units + diagonal_down + diagonal_up
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
 
@@ -117,9 +119,9 @@ def only_choice(values):
     new_values = values.copy()
     for unit in unitlist:
         for digit in '123456789':
-            multiloc = [box for box in unit if digit in values[box]]
-            if len(multiloc) == 1:
-                new_values[multiloc[0]] = digit 
+            multilocation = [box for box in unit if digit in values[box]]
+            if len(multilocation) == 1:
+                new_values[multilocation[0]] = digit 
 
     return new_values
 
