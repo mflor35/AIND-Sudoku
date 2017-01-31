@@ -1,3 +1,4 @@
+import re
 assignments = []
 rows = 'ABCDEFGHI'
 cols = '123456789'
@@ -13,7 +14,6 @@ square_units = [cross(rs, cs) for rs in ('ABC', 'DEF', 'GHI') for cs in ('123', 
 unitlist = row_units + column_units + square_units
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
-
 
 def assign_value(values, box, value):
     """
@@ -33,10 +33,17 @@ def naked_twins(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
-
-    # Find all instances of naked twins
-    # Eliminate the naked twins as possibilities for their peers
-
+    double_values = [s for s in boxes if len(values[s]) == 2]
+    nts = []
+    [nts.append(s) for s in double_values for peer in peers[s] if values[s] == values[peer] and s not in nts]
+    print(nts)
+    for nt in nts:
+        digits = values[nt]
+        for peer in peers[nt]:
+            if len(values[peer]) > 2:
+                for d in digits:
+                    values[peer] = values[peer].replace(d,'')
+    return values
 def grid_values(grid):
     """
     Convert grid into a dict of {square: char} with '123456789' for empties.
@@ -52,7 +59,6 @@ def grid_values(grid):
     
     for i in range(len(boxes)):
         if grid[i] == '.':
-            print(grid[i])
             sudoku_dict[boxes[i]] = '123456789'
         else:
             sudoku_dict[boxes[i]] = grid[i]
@@ -64,7 +70,7 @@ def display(values):
     Args:
         values(dict): The sudoku in dictionary form
     """
-    width = 1 + max(len(values[s]) for s in boxes)
+    width = 1+max(len(values[s]) for s in boxes)
     line  = '+'.join(['-' * (width * 3)] * 3)
     for r in rows:
         print(''.join(values[r + c].center(width) + ('|' if c in '36' else '') for c in cols))
@@ -108,6 +114,7 @@ def only_choice(values):
     Returns:
         Resulting Sudoku in dictionary form after filling in only choices.
     """
+    new_values = values.copy()
     for unit in unitlist:
         for digit in '123456789':
             multiloc = [box for box in unit if digit in values[box]]
@@ -163,11 +170,15 @@ def solve(grid):
     Returns:
         The dictionary representation of the final sudoku grid. False if no solution exists.
     """
+    values = grid_values(grid)
+    solution = search(values)
+    
+    return solution
 
 if __name__ == '__main__':
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
+    #test_grid = '..3.2.6..9..3.5..1..18.64....81.29..7.......8..67.82....26.95..8..2.3..9..5.1.3..'
     display(solve(diag_sudoku_grid))
-
     try:
         from visualize import visualize_assignments
         visualize_assignments(assignments)
