@@ -3,11 +3,12 @@
 
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: *Student should provide answer here*
+A: A pair of naked twins is one defined as two squares in the same column, row, 3x3 box or diagonal that share the same pair of values.
+We use constraint propagation to eliminate these two values from other squares that share the same column, row, 3x3 box or diagonal.
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: *Student should provide answer here*
+A: We use constraint propagation by only allowing the numbers 1 - 9 to appear only once diagonally.
 
 ### Install
 
