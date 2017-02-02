@@ -1,21 +1,5 @@
-import re
+from utils import *
 assignments = []
-rows = 'ABCDEFGHI'
-cols = '123456789'
-
-def cross(A, B):
-    "Cross product of elements in A and elements in B."
-    return [ s+t for s in A for t in B ]
-
-boxes = cross(rows, cols)
-row_units = [cross(row, cols) for row in rows]
-column_units = [cross(rows, col) for col in cols]
-square_units = [cross(rs, cs) for rs in ('ABC', 'DEF', 'GHI') for cs in ('123', '456', '789')]
-diagonal_down = [['A1','B2','C3','D4','E5','F6','G7','H8','I9']]
-diagonal_up = [['A9','B8','C7','D6','E5','F4','G3','H2','I1']]
-unitlist = row_units + column_units + square_units + diagonal_down + diagonal_up
-units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
-peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
 
 def assign_value(values, box, value):
     """
@@ -35,16 +19,30 @@ def naked_twins(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
-    double_values = [s for s in boxes if len(values[s]) == 2]
-    nts = []
-    [nts.append(s) for s in double_values for peer in peers[s] if values[s] == values[peer] and s not in nts]
-    print(nts)
-    for nt in nts:
-        digits = values[nt]
-        for peer in peers[nt]:
-            if len(values[peer]) > 2:
-                for d in digits:
-                    values[peer] = values[peer].replace(d,'')
+    # Find all boxes with only two possible values
+    doubles = [s for s in boxes if len(values[s]) == 2] 
+    # Find all the boxes that have twins
+    twins = []
+    for double in doubles:
+        for peer in peers[double]: 
+            if values[peer] == values[double] and peer not in twins:
+                twins.append(peer)
+    # Change only the values of peers that share the same unit where a pair of twins resides
+    print(twins)
+    for twin in twins:
+        twin_value = values[twin]
+        rest_of_twins = [ box for box in twins if box != twin ]
+        for s in rest_of_twins:
+            for unit in units[s]:
+                if twin in unit and values[twin] == values[s]:
+                    print("Twins:",s,twin,"is in unit",unit)
+                    for box in unit:
+                        print("looking at:", box, values[box])
+                        if len(values[box]) > 2:
+                            print("Modifying:",box,values[box])
+                            for digit in twin_value:
+                                values[box] = values[box].replace(digit,'')
+                            print("Changed to:",box,values[box])
     return values
 def grid_values(grid):
     """
