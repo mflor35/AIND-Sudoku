@@ -133,6 +133,8 @@ def reduce_puzzle(values):
         values = eliminate(values)
         # Use Only Choice Strategy
         values = only_choice(values)
+        # Use Naked Twins Strategy
+        values = naked_twins(values)
         # Check how many boxes have a determined value, to compare
         solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
         # If no new values were added, stop the loop
