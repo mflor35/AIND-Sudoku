@@ -28,21 +28,16 @@ def naked_twins(values):
             if values[peer] == values[double] and peer not in twins:
                 twins.append(peer)
     # Change only the values of peers that share the same unit where a pair of twins resides
-    print(twins)
     for twin in twins:
         twin_value = values[twin]
         rest_of_twins = [ box for box in twins if box != twin ]
         for s in rest_of_twins:
             for unit in units[s]:
                 if twin in unit and values[twin] == values[s]:
-                    print("Twins:",s,twin,"is in unit",unit)
                     for box in unit:
-                        print("looking at:", box, values[box])
                         if len(values[box]) > 2:
-                            print("Modifying:",box,values[box])
                             for digit in twin_value:
                                 values[box] = values[box].replace(digit,'')
-                            print("Changed to:",box,values[box])
     return values
 def grid_values(grid):
     """
